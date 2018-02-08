@@ -1,14 +1,14 @@
 {
-  "id": "661BC005-61BE-430F-B994-065BF08C0F39",
+  "id": "ff94ff9c-20f1-4d1c-b138-d6a720aec8e4",
   "name": "GenerateReleaseNotes",
   "friendlyName": "Generate Release Notes",
   "description": "Generates a release notes file in a format of your choice",
-    "helpMarkDown": "Version: #{Build.BuildNumber}#. [More Information](https://github.com/rfennell/vNextBuild/wiki/GenerateReleaseNotes%20-Tasks/)",
+  "helpMarkDown": "Version: #{Build.BuildNumber}#. [More Information](https://github.com/rfennell/vNextBuild/wiki/GenerateReleaseNotes%20-Tasks/)",
 
   "category": "Utility",
   "visibility": [
-                "Build"
-                ],
+    "Build"
+  ],
   "author": "Black Marble",
   "version": {
     "Major": 1,
@@ -16,20 +16,18 @@
     "Patch": 0
   },
   "minimumAgentVersion": "1.82.0",
-  "groups": [
-    {
+  "groups": [{
       "name": "advanced",
       "displayName": "Advanced",
       "isExpanded": false
     },
-     {
+    {
       "name": "outputs",
       "displayName": "Outputs",
       "isExpanded": false
     }
   ],
-  "inputs": [
-    {
+  "inputs": [{
       "name": "outputfile",
       "type": "string",
       "label": "Output file",
@@ -118,9 +116,27 @@
       "label": "Name of stage (override)",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "If set uses this stage name to find the last succesful deployment, as opposed to the currently active stage (Release usage only)",
+      "helpMarkDown": "If set uses this stage name to find the last successful deployment, as opposed to the currently active stage (Release usage only)",
       "groupName": "advanced",
       "visibleRule": "generateForCurrentRelease = false"
+    },
+    {
+      "name": "returnAllChanges",
+      "type": "boolean",
+      "label": "Return all changes",
+      "defaultValue": "True",
+      "required": false,
+      "helpMarkDown": "A boolean flag whether to return all of the build's associated changeset/commits, or to limit it to the number specified in the maxChanges field",
+      "groupName": "advanced"
+    },
+    {
+      "name": "returnAllWorkItems",
+      "type": "boolean",
+      "label": "Return all work items",
+      "defaultValue": "True",
+      "required": false,
+      "helpMarkDown": "A boolean flag whether to return all of the build's associated work items, or to limit it to the number specified in the maxWi field",
+      "groupName": "advanced"
     },
     {
       "name": "maxWi",
@@ -129,7 +145,8 @@
       "defaultValue": "50",
       "required": false,
       "helpMarkDown": "The maximum Work Items to return in the report",
-      "groupName": "advanced"
+      "groupName": "advanced",
+      "visibleRule": "returnAllWorkItems = false"      
     },
     {
       "name": "maxChanges",
@@ -138,7 +155,8 @@
       "defaultValue": "50",
       "required": false,
       "helpMarkDown": "The maximum Changeset/Commits to return in the report",
-      "groupName": "advanced"
+      "groupName": "advanced",
+      "visibleRule": "returnAllChanges = false"            
     },
     {
       "name": "appendToFile",

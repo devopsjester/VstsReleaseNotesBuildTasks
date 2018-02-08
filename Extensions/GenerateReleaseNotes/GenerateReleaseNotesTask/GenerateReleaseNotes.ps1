@@ -58,6 +58,12 @@ param (
 	[parameter(Mandatory=$false,HelpMessage="Overide the text to put in generated files if no data returned")]
     $emptySetText,
     
+    [parameter(Mandatory=$false,HelpMessage="Return all changes (changesets or commits)")]
+    $returnAllChanges, 
+
+    [parameter(Mandatory=$false,HelpMessage="Return all work items")]
+    $returnAllWorkItems, 
+
     [parameter(Mandatory=$false,HelpMessage="Overide the default of 50 changesets/commits items returned")]
     $maxChanges, 
 
@@ -102,6 +108,13 @@ if ( ([string]::IsNullOrEmpty($releaseid) -eq $false) -and [string]::IsNullOrEmp
     $releasedefid = $releasedefinition.id
 }
 
+if ($returnAllChanges) {
+    $maxChanges = [int]::MaxValue
+}
+if ($returnAllWorkItems) {
+    $maxWi = [int]::MaxValue
+}
+
 Write-Verbose "collectionUrl = [$collectionUrl]"
 Write-Verbose "teamproject = [$teamproject]"
 Write-Verbose "releaseid = [$releaseid]"
@@ -115,7 +128,9 @@ Write-Verbose "buildnumber = [$buildnumber]"
 Write-Verbose "outputVariableName = [$outputvariablename]"
 Write-Verbose "generateForOnlyPrimary = [$generateForOnlyPrimary]"
 Write-Verbose "generateForCurrentRelease = [$generateForCurrentRelease]"
+Write-Verbose "returnAllWorkItems = [$returnAllWorkItems]"
 Write-Verbose "maxWi = [$maxWi]"
+Write-Verbose "returnAllChanges = [$returnAllChanges]"
 Write-Verbose "maxChanges = [$maxChanges]"
 Write-Verbose "showParents  =[$showParents]"
 Write-Verbose "wiFilter = [$wiFilter]"

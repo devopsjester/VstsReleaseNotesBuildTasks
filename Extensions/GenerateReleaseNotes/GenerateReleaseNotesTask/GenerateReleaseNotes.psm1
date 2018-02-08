@@ -14,8 +14,8 @@ function Get-BuildWorkItems {
         $usedefaultcreds,
         $maxItems,
         $wifilter,
-		$wiStateFilter,
-		$showParents
+        $wiStateFilter,
+        $showParents
     )
 
     Write-Verbose "        Getting up to $($maxItems) associated work items for build [$($buildid)]"
@@ -23,67 +23,67 @@ function Get-BuildWorkItems {
 	 
     try {
         $uri = "$($tfsUri)/$($teamproject)/_apis/build/builds/$($buildid)/workitems?api-version=2.0&`$top=$($maxItems)"
-		$jsondata = Invoke-GetCommand -uri $uri -usedefaultcreds $usedefaultcreds| ConvertFrom-JsonUsingDOTNET
-		Write-Verbose "        Found $($jsondata.value.Count) WI directly associated with build"
-		if ($showParents -eq $false)
-		{
-			Write-Verbose "        Running in directly associated WI only mode"
-			foreach ($wi in $jsondata.value) {
-				$wiList += Get-Detail -uri $wi.url -usedefaultcreds $usedefaultcreds
-			}	
-		} else {
+        $jsondata = Invoke-GetCommand -uri $uri -usedefaultcreds $usedefaultcreds| ConvertFrom-JsonUsingDOTNET
+        Write-Verbose "        Found $($jsondata.value.Count) WI directly associated with build"
+        if ($showParents -eq $false) {
+            Write-Verbose "        Running in directly associated WI only mode"
+            foreach ($wi in $jsondata.value) {
+                $wiList += Get-Detail -uri $wi.url -usedefaultcreds $usedefaultcreds
+            }	
+        }
+        else {
             $wiArray = @{}
-			Write-Verbose "        Running in directly associated WI and parent mode"
-			foreach ($wi in $jsondata.value) {
-				# Get associated work item
-				$wiuri = $wi.url
-				$wiuri = "$($wiuri)?`$expand=relations"
-				$wiDetail = Get-Detail -uri $wiuri -usedefaultcreds $usedefaultcreds
-				$wiArray.Add($wiDetail.id, $wiDetail)
-				$wiType = $wiDetail.fields."System.WorkItemType"
-				if ("Task,Bug" -like "*$wiType*") {
-					# Get parent work item (for Task and Bug only)
-					foreach ($parentwi in $wiDetail.relations) {
-						if ($parentwi.rel -eq "System.LinkTypes.Hierarchy-Reverse") {
-							$wiParent = Get-Detail -uri $parentwi.url -usedefaultcreds $usedefaultcreds
-							if ($wiArray.ContainsKey($wiParent.id) -eq $false) {
-								$wiArray.Add($wiParent.id, $wiParent)
-							}
-						}
-					}
-				}
+            Write-Verbose "        Running in directly associated WI and parent mode"
+            foreach ($wi in $jsondata.value) {
+                # Get associated work item
+                $wiuri = $wi.url
+                $wiuri = "$($wiuri)?`$expand=relations"
+                $wiDetail = Get-Detail -uri $wiuri -usedefaultcreds $usedefaultcreds
+                $wiArray.Add($wiDetail.id, $wiDetail)
+                $wiType = $wiDetail.fields."System.WorkItemType"
+                if ("Task,Bug" -like "*$wiType*") {
+                    # Get parent work item (for Task and Bug only)
+                    foreach ($parentwi in $wiDetail.relations) {
+                        if ($parentwi.rel -eq "System.LinkTypes.Hierarchy-Reverse") {
+                            $wiParent = Get-Detail -uri $parentwi.url -usedefaultcreds $usedefaultcreds
+                            if ($wiArray.ContainsKey($wiParent.id) -eq $false) {
+                                $wiArray.Add($wiParent.id, $wiParent)
+                            }
+                        }
+                    }
+                }
             }
             Write-Verbose "        Found $($wiArray.Count) WI directly associated with build or parents of associated WI before filtering"
 
-			# Filter the wi's based on types
-			$keys = @($wiArray.Keys)
-			if (([string]::IsNullOrEmpty($wifilter) -eq $false)) {
-				Write-Verbose "        Filtering WI on type - $($wifilter)"
-				foreach ($key in $keys) {
-					$wi = $wiArray.$key
-					$wiType = $wi.fields."System.WorkItemType"
-					if ($wifilter -notlike "*$wiType*") {
+            # Filter the wi's based on types
+            $keys = @($wiArray.Keys)
+            if (([string]::IsNullOrEmpty($wifilter) -eq $false)) {
+                Write-Verbose "        Filtering WI on type - $($wifilter)"
+                foreach ($key in $keys) {
+                    $wi = $wiArray.$key
+                    $wiType = $wi.fields."System.WorkItemType"
+                    if ($wifilter -notlike "*$wiType*") {
                         Write-Verbose "        Removed WI $($key) as does not match type filter"
-						$wiArray.Remove($key)
-					}
-				}
-			}
-			# Filter the wi's based on states
-			$keys = @($wiArray.Keys)
-			if (([string]::IsNullOrEmpty($wiStateFilter) -eq $false)) {
-				Write-Verbose "        Filtering WI on state - $($wiStateFilter)"
-				foreach ($key in $keys) {
-					$wi = $wiArray.$key
-					$wiState = $wi.fields."System.State"
-					if ($wiStateFilter -notlike "*$wiState*") {
+                        $wiArray.Remove($key)
+                    }
+                }
+            }
+            # Filter the wi's based on states
+            $keys = @($wiArray.Keys)
+            if (([string]::IsNullOrEmpty($wiStateFilter) -eq $false)) {
+                Write-Verbose "        Filtering WI on state - $($wiStateFilter)"
+                foreach ($key in $keys) {
+                    $wi = $wiArray.$key
+                    $wiState = $wi.fields."System.State"
+                    if ($wiStateFilter -notlike "*$wiState*") {
                         Write-Verbose "        Removed WI $($key) as does not match state filter"
-						$wiArray.Remove($key)
-					}
-				}
-			}
-			# Now get the resulting array
-			$wiList = @($wiArray.Values)
-		}
+                        $wiArray.Remove($key)
+                    }
+                }
+            }
+            # Now get the resulting array
+            $wiList = @($wiArray.Values)
+        }
     }
     catch {
         Write-warning "        Unable to get associated work items, most likely cause is the build has been deleted"
@@ -223,9 +223,9 @@ function Get-BuildReleaseArtifacts {
 function ConvertFrom-JsonUsingDOTNET {
     param
     (
-      [Parameter(Mandatory=$True, ValueFromPipeline=$True)]
-      $data,
-      [int]$maxdatasize = 104857600 #100mb as bytes, default is 2mb
+        [Parameter(Mandatory = $True, ValueFromPipeline = $True)]
+        $data,
+        [int]$maxdatasize = 104857600 #100mb as bytes, default is 2mb
     )
  
     add-type -assembly system.web.extensions
@@ -237,36 +237,37 @@ function ConvertFrom-JsonUsingDOTNET {
  
     $jsonTree = $json.Deserialize($data, [System.Object])
     Expand-Tree $jsonTree $jsondata.count
- }
+}
  
- function Expand-Tree($jsonTree) {
-     $result = @()
+function Expand-Tree($jsonTree) {
+    $result = @()
  
-     # Go through each node in the tree
-     foreach ($node in $jsonTree) {
+    # Go through each node in the tree
+    foreach ($node in $jsonTree) {
  
-         # For each node we need to set up its keys/properties/fields
-         $nodeHash = @{}
-         foreach ($property in $node.Keys) {
-             # If a field is a set (either a dictionary or array - both used by the deserializer) we will need to iterate it
-             if ($node[$property] -is [System.Collections.Generic.Dictionary[String, Object]] -or $node[$property] -is [Object[]]) {
-                 # This assignment is important as it forces single result sets to be wrapped in an array, which is required
-                 $inner = @()
-                 $inner += Expand-Tree $node[$property]
+        # For each node we need to set up its keys/properties/fields
+        $nodeHash = @{}
+        foreach ($property in $node.Keys) {
+            # If a field is a set (either a dictionary or array - both used by the deserializer) we will need to iterate it
+            if ($node[$property] -is [System.Collections.Generic.Dictionary[String, Object]] -or $node[$property] -is [Object[]]) {
+                # This assignment is important as it forces single result sets to be wrapped in an array, which is required
+                $inner = @()
+                $inner += Expand-Tree $node[$property]
  
-                 $nodeHash.Add($property, $inner)
-             } else {
-                 $nodeHash.Add($property, $node[$property])
-             }
-         }
+                $nodeHash.Add($property, $inner)
+            }
+            else {
+                $nodeHash.Add($property, $node[$property])
+            }
+        }
  
-         # Create a custom object from the hash table so it matches the original. It must be a PSCustomObject
-         # because the serializer (later) requires that and not a PSObject or HashTable.
-         $result += [PSCustomObject] $nodeHash
-     }
+        # Create a custom object from the hash table so it matches the original. It must be a PSCustomObject
+        # because the serializer (later) requires that and not a PSObject or HashTable.
+        $result += [PSCustomObject] $nodeHash
+    }
  
-     return $result
- }
+    return $result
+}
 
 function Add-Space {
     param(
@@ -547,8 +548,8 @@ function Get-BuildDataSet {
         $maxWi,
         $maxChanges,
         $wiFilter,
-		$wiStateFilter,
-		$showParents
+        $wiStateFilter,
+        $showParents
     )
 
     # Get the callers preference variables. See https://blogs.technet.microsoft.com/heyscriptingguy/2014/04/26/weekend-scripter-access-powershell-preference-variables/
@@ -557,17 +558,113 @@ function Get-BuildDataSet {
     write-verbose "    Getting build details for BuildID [$buildid]"    
     $build = Get-Build -tfsUri $tfsUri -teamproject $teamproject -buildid $buildid -usedefaultcreds $usedefaultcreds
 
-    $changesets = (Get-BuildChangeSets -tfsUri $tfsUri -teamproject $teamproject -buildid $buildid -usedefaultcreds $usedefaultcreds -maxItems $maxChanges )
+    $changes = (Get-BuildChangeSets -tfsUri $tfsUri -teamproject $teamproject -buildid $buildid -usedefaultcreds $usedefaultcreds -maxItems $maxChanges )
     $workItems = @()
-    foreach ($changeset in $changesets) {
-        $workItems += Get-ChangesetWorkItems -change $changeset -tfsUri $tfsUri -teamproject $teamproject -buildid $buildid -usedefaultcreds $usedefaultcreds -maxItems $maxWi -wifilter $wifilter -wiStateFilter $wiStateFilter -showParents $showParents
+    foreach ($change in $changes) {
+        if ($change.commitId) {
+            # change is in a Git repository - use the Git/commits API
+            $workItems += Get-CommitWorkItems -change $change -tfsUri $tfsUri -teamproject $teamproject -buildid $buildid -usedefaultcreds $usedefaultcreds -maxItems $maxWi -wifilter $wifilter -wiStateFilter $wiStateFilter -showParents $showParents
+            
+        }
+        else {
+            # change is in a TFVC repository - use the TFVC/changesets API
+            $workItems += Get-ChangesetWorkItems -change $change -tfsUri $tfsUri -teamproject $teamproject -buildid $buildid -usedefaultcreds $usedefaultcreds -maxItems $maxWi -wifilter $wifilter -wiStateFilter $wiStateFilter -showParents $showParents
+        }
+        
     }
     
     $build = @{ 'build' = $build;
-				'workitems' = $workItems;
-				'changesets' = $changesets
+        'workitems' = $workItems;
+        'changesets' = $changes
     }
     $build
+}
+
+function Get-CommitWorkItems {
+    [CmdletBinding()]
+    param (
+        $change,
+        $tfsUri,
+        $teamproject,
+        $buildid,
+        $usedefaultcreds,
+        $maxItems,
+        $wifilter,
+        $wiStateFilter,
+        $showParents
+    )
+
+    Write-Verbose "        Getting up to $($maxItems) associated work items for commit [$($change.commitId.Substring(0,7))]"
+    $wiList = @();
+	 
+    try {
+        $ids = [Regex]::Matches($change.comment, '#(?<id>\d+)') | Select-Object @{ Name = "Value"; Expression = {$_.Groups['id'].Value } }
+        Write-Verbose "        Found $($ids.Count) WI directly associated with build"
+        if ($showParents -eq $false) {
+            Write-Verbose "        Running in directly associated WI only mode"
+            foreach ($wi in $ids) {
+                $wiUrl = "$tfsUri/_apis/wit/workitems/$($wi)?api-version=1.0"
+                $wiList += Get-Detail -uri $wiUrl -usedefaultcreds $usedefaultcreds
+            }	
+        }
+        else {
+            $wiArray = @{}
+            Write-Verbose "        Running in directly associated WI and parent mode"
+            foreach ($wi in $ids) {
+                # Get associated work item
+                $wiuri = "$tfsUri/_apis/wit/workitems/$($wi.Value)?api-version=1.0&`$expand=relations"
+                $wiDetail = Get-Detail -uri $wiuri -usedefaultcreds $usedefaultcreds
+                $wiArray.Add($wiDetail.id, $wiDetail)
+                $wiType = $wiDetail.fields."System.WorkItemType"
+                if ("Task,Bug" -like "*$wiType*") {
+                    # Get parent work item (for Task and Bug only)
+                    foreach ($parentwi in $wiDetail.relations) {
+                        if ($parentwi.rel -eq "System.LinkTypes.Hierarchy-Reverse") {
+                            $wiParent = Get-Detail -uri $parentwi.url -usedefaultcreds $usedefaultcreds
+                            if ($wiArray.ContainsKey($wiParent.id) -eq $false) {
+                                $wiArray.Add($wiParent.id, $wiParent)
+                            }
+                        }
+                    }
+                }
+            }
+            Write-Verbose "        Found $($wiArray.Count) WI directly associated with build or parents of associated WI before filtering"
+
+            # Filter the wi's based on types
+            $keys = @($wiArray.Keys)
+            if (([string]::IsNullOrEmpty($wifilter) -eq $false)) {
+                Write-Verbose "        Filtering WI on type - $($wifilter)"
+                foreach ($key in $keys) {
+                    $wi = $wiArray.$key
+                    $wiType = $wi.fields."System.WorkItemType"
+                    if ($wifilter -notlike "*$wiType*") {
+                        Write-Verbose "        Removed WI $($key) as does not match type filter"
+                        $wiArray.Remove($key)
+                    }
+                }
+            }
+            # Filter the wi's based on states
+            $keys = @($wiArray.Keys)
+            if (([string]::IsNullOrEmpty($wiStateFilter) -eq $false)) {
+                Write-Verbose "        Filtering WI on state - $($wiStateFilter)"
+                foreach ($key in $keys) {
+                    $wi = $wiArray.$key
+                    $wiState = $wi.fields."System.State"
+                    if ($wiStateFilter -notlike "*$wiState*") {
+                        Write-Verbose "        Removed WI $($key) as does not match state filter"
+                        $wiArray.Remove($key)
+                    }
+                }
+            }
+            # Now get the resulting array
+            $wiList = @($wiArray.Values)
+        }
+    }
+    catch {
+        Write-warning "        Unable to get associated work items, most likely cause is the build has been deleted"
+        Write-warning $_.Exception.Message
+    }
+    $wiList
 }
 
 function Get-ChangesetWorkItems {
@@ -590,66 +687,66 @@ function Get-ChangesetWorkItems {
     try {
         $uri = "$($change._links.workItems.href)?api-version=2.0"
         $jsondata = Invoke-GetCommand -uri $uri -usedefaultcreds $usedefaultcreds| ConvertFrom-JsonUsingDOTNET
-		Write-Verbose "        Found $($jsondata.value.Count) WI directly associated with build"
-		if ($showParents -eq $false)
-		{
-			Write-Verbose "        Running in directly associated WI only mode"
-			foreach ($wi in $jsondata.value) {
+        Write-Verbose "        Found $($jsondata.value.Count) WI directly associated with build"
+        if ($showParents -eq $false) {
+            Write-Verbose "        Running in directly associated WI only mode"
+            foreach ($wi in $jsondata.value) {
                 $wiUrl = "$tfsUri/_apis/wit/workitems/$($wi.id)?api-version=1.0"
-				$wiList += Get-Detail -uri $wiUrl -usedefaultcreds $usedefaultcreds
-			}	
-		} else {
+                $wiList += Get-Detail -uri $wiUrl -usedefaultcreds $usedefaultcreds
+            }	
+        }
+        else {
             $wiArray = @{}
-			Write-Verbose "        Running in directly associated WI and parent mode"
-			foreach ($wi in $jsondata.value) {
-				# Get associated work item
-				$wiuri = "$tfsUri/_apis/wit/workitems/$($wi.id)?api-version=1.0&`$expand=relations"
-				$wiDetail = Get-Detail -uri $wiuri -usedefaultcreds $usedefaultcreds
-				$wiArray.Add($wiDetail.id, $wiDetail)
-				$wiType = $wiDetail.fields."System.WorkItemType"
-				if ("Task,Bug" -like "*$wiType*") {
-					# Get parent work item (for Task and Bug only)
-					foreach ($parentwi in $wiDetail.relations) {
-						if ($parentwi.rel -eq "System.LinkTypes.Hierarchy-Reverse") {
-							$wiParent = Get-Detail -uri $parentwi.url -usedefaultcreds $usedefaultcreds
-							if ($wiArray.ContainsKey($wiParent.id) -eq $false) {
-								$wiArray.Add($wiParent.id, $wiParent)
-							}
-						}
-					}
-				}
+            Write-Verbose "        Running in directly associated WI and parent mode"
+            foreach ($wi in $jsondata.value) {
+                # Get associated work item
+                $wiuri = "$tfsUri/_apis/wit/workitems/$($wi.id)?api-version=1.0&`$expand=relations"
+                $wiDetail = Get-Detail -uri $wiuri -usedefaultcreds $usedefaultcreds
+                $wiArray.Add($wiDetail.id, $wiDetail)
+                $wiType = $wiDetail.fields."System.WorkItemType"
+                if ("Task,Bug" -like "*$wiType*") {
+                    # Get parent work item (for Task and Bug only)
+                    foreach ($parentwi in $wiDetail.relations) {
+                        if ($parentwi.rel -eq "System.LinkTypes.Hierarchy-Reverse") {
+                            $wiParent = Get-Detail -uri $parentwi.url -usedefaultcreds $usedefaultcreds
+                            if ($wiArray.ContainsKey($wiParent.id) -eq $false) {
+                                $wiArray.Add($wiParent.id, $wiParent)
+                            }
+                        }
+                    }
+                }
             }
             Write-Verbose "        Found $($wiArray.Count) WI directly associated with build or parents of associated WI before filtering"
 
-			# Filter the wi's based on types
-			$keys = @($wiArray.Keys)
-			if (([string]::IsNullOrEmpty($wifilter) -eq $false)) {
-				Write-Verbose "        Filtering WI on type - $($wifilter)"
-				foreach ($key in $keys) {
-					$wi = $wiArray.$key
-					$wiType = $wi.fields."System.WorkItemType"
-					if ($wifilter -notlike "*$wiType*") {
+            # Filter the wi's based on types
+            $keys = @($wiArray.Keys)
+            if (([string]::IsNullOrEmpty($wifilter) -eq $false)) {
+                Write-Verbose "        Filtering WI on type - $($wifilter)"
+                foreach ($key in $keys) {
+                    $wi = $wiArray.$key
+                    $wiType = $wi.fields."System.WorkItemType"
+                    if ($wifilter -notlike "*$wiType*") {
                         Write-Verbose "        Removed WI $($key) as does not match type filter"
-						$wiArray.Remove($key)
-					}
-				}
-			}
-			# Filter the wi's based on states
-			$keys = @($wiArray.Keys)
-			if (([string]::IsNullOrEmpty($wiStateFilter) -eq $false)) {
-				Write-Verbose "        Filtering WI on state - $($wiStateFilter)"
-				foreach ($key in $keys) {
-					$wi = $wiArray.$key
-					$wiState = $wi.fields."System.State"
-					if ($wiStateFilter -notlike "*$wiState*") {
+                        $wiArray.Remove($key)
+                    }
+                }
+            }
+            # Filter the wi's based on states
+            $keys = @($wiArray.Keys)
+            if (([string]::IsNullOrEmpty($wiStateFilter) -eq $false)) {
+                Write-Verbose "        Filtering WI on state - $($wiStateFilter)"
+                foreach ($key in $keys) {
+                    $wi = $wiArray.$key
+                    $wiState = $wi.fields."System.State"
+                    if ($wiStateFilter -notlike "*$wiState*") {
                         Write-Verbose "        Removed WI $($key) as does not match state filter"
-						$wiArray.Remove($key)
-					}
-				}
-			}
-			# Now get the resulting array
-			$wiList = @($wiArray.Values)
-		}
+                        $wiArray.Remove($key)
+                    }
+                }
+            }
+            # Now get the resulting array
+            $wiList = @($wiArray.Values)
+        }
     }
     catch {
         Write-warning "        Unable to get associated work items, most likely cause is the build has been deleted"

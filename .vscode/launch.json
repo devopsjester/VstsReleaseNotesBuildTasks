@@ -3,6 +3,14 @@
     "configurations": 
     [ 
         {
+            "type": "PowerShell",
+            "request": "launch",
+            "name": "PowerShell GenerateReleaseNotes Pester Tests",
+            "script": "${workspaceRoot}/Extensions/GenerateReleaseNotes/test/localrun.tests.ps1",
+            "args": [],
+            "cwd": "${workspaceRoot}/Extensions/GenerateReleaseNotes/test"
+        },
+        {
              "type": "node",
             "request": "launch",
             "name": "Node - XPlatGenerateReleaseNotes",

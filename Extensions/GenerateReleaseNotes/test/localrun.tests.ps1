@@ -31,7 +31,7 @@ Describe "Template Processing Tests" {
         $builds = Get-BuildDataSet -tfsUri $collectionUrl -teamproject $teamproject -buildid $buildid -usedefaultcreds $usedefaultcreds -maxWi $maxWi -maxChanges $maxChanges -wiFilter $wiFilter -wiStateFilter $wiStateFilter -showParents $showParents
         $template = Get-Template -templateLocation $templateLocation -templatefile $templatefile -inlinetemplate $inlinetemplate
         $outputmarkdown = Invoke-Template -template $template -builds $builds -releases $releases -stagename $stageName -defname $builddefname -releasedefname $releasedefname
-        $outputmarkdown | set-content $env:USERPROFILE\Temp\build-8-release-notes.md
+        $outputmarkdown | set-content $env:USERPROFILE\Temp\build-$build-release-notes.md
     }
 
     It "can generate a build based report with parents from a Git repository" {
@@ -40,7 +40,7 @@ Describe "Template Processing Tests" {
         $templatefile="..\..\..\SampleTemplates\GenerateReleaseNotes (Original Powershell based)\build-basic-template.md"
         $inlinetemplate=""
         $stageName = ""
-        $buildid = 7
+        $buildid = 10
         $builddefname ="AllScriptsDemo-CI"
         $releasedefname = ""
         $collectionUrl = "https://customers-assafstone.visualstudio.com/DefaultCollection"
@@ -52,8 +52,8 @@ Describe "Template Processing Tests" {
         #$env:PAT = "<VALID PAT>"
         $DebugPreference = "Inquire"
 
-        $maxWi=50
-        $maxChanges=50
+        $maxWi=500
+        $maxChanges=500
         $appendToFile=$False
         $showParents=$true
         $wiFilter="Product Backlog Item, Bug"
@@ -63,6 +63,6 @@ Describe "Template Processing Tests" {
         $builds = Get-BuildDataSet -tfsUri $collectionUrl -teamproject $teamproject -buildid $buildid -usedefaultcreds $usedefaultcreds -maxWi $maxWi -maxChanges $maxChanges -wiFilter $wiFilter -wiStateFilter $wiStateFilter -showParents $showParents
         $template = Get-Template -templateLocation $templateLocation -templatefile $templatefile -inlinetemplate $inlinetemplate
         $outputmarkdown = Invoke-Template -template $template -builds $builds -releases $releases -stagename $stageName -defname $builddefname -releasedefname $releasedefname
-        $outputmarkdown | set-content $env:USERPROFILE\Temp\build-7-release-notes.md
+        $outputmarkdown | set-content $env:USERPROFILE\Temp\build-$buildid-release-notes.md
     }
 }

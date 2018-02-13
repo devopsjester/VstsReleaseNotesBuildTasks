@@ -1,7 +1,14 @@
 {
     "version": "0.2.0",
-    "configurations": 
-    [ 
+    "configurations": [
+        {
+            "type": "PowerShell",
+            "request": "launch",
+            "name": "Publish To Wiki",
+            "script": "${workspaceRoot}/Extensions/PublishToWiki/PublishToWikiTask/PublishToWiki.ps1",
+            "args": ["-File C:\\Users\\assaf\\temp\\Release.md -PathToFile \"Hello/Release-Date-Feb-10-2018\" -ReleaseTOC \"/Hello/Release-Date-Feb-10-2018/Release-Date-Feb-10-2018.md\" -WikiUri https://customers-assafstone.visualstudio.com/AllScriptsDemo/_git/AllScriptsDemo.wiki -Verbose"],
+            "cwd": "${workspaceRoot}"
+        },
         {
             "type": "PowerShell",
             "request": "launch",
@@ -11,28 +18,34 @@
             "cwd": "${workspaceRoot}/Extensions/GenerateReleaseNotes/test"
         },
         {
-             "type": "node",
+            "type": "node",
             "request": "launch",
             "name": "Node - XPlatGenerateReleaseNotes",
             "program": "${workspaceRoot}/Extensions/XplatGenerateReleaseNotes/XPlatGenerateReleaseNotesTask/GenerateReleaseNotes.js",
-            "outFiles": ["${workspaceRoot}/Extensions/XplatGenerateReleaseNotes/XPlatGenerateReleaseNotesTask/*.js"],
+            "outFiles": [
+                "${workspaceRoot}/Extensions/XplatGenerateReleaseNotes/XPlatGenerateReleaseNotesTask/*.js"
+            ],
             "cwd": "${workspaceRoot}"
         },
-         {
+        {
             "type": "node",
             "request": "launch",
             "name": "Node - VersionDotNetCoreAssembliesTask",
             "program": "${workspaceRoot}/Extensions/Versioning/VersionDotNetCoreAssembliesTask/ApplyVersionToAssemblies.js",
-            "outFiles": ["${workspaceRoot}/Extensions/Versioning/VersionDotNetCoreAssembliesTask/*.js"],
-              "cwd": "${workspaceRoot}"
+            "outFiles": [
+                "${workspaceRoot}/Extensions/Versioning/VersionDotNetCoreAssembliesTask/*.js"
+            ],
+            "cwd": "${workspaceRoot}"
         },
-         {
-             "type": "node",
+        {
+            "type": "node",
             "request": "launch",
             "name": "Node - XmlFileTask",
             "program": "${workspaceRoot}/Extensions/FileUtilities/src/FileUpdate.ts",
-            "outFiles": ["${workspaceRoot}/Extensions/FileUtilities/dist/src/*.js"]
-          },
+            "outFiles": [
+                "${workspaceRoot}/Extensions/FileUtilities/dist/src/*.js"
+            ]
+        },
         {
             "name": "PowerShell - GenerateReleaseNotes",
             "type": "PowerShell",

@@ -3,9 +3,6 @@ param (
     [Parameter(Mandatory=$true, HelpMessage="The path from the root wiki page to where the new page should be located")]
     [string]$PathToFile,
 
-    [Parameter(Mandatory=$true, HelpMessage="The wiki page for the release's table of contents")]
-    [string]$ReleaseTOC,
-
     [Parameter(Mandatory=$true, HelpMessage="The URL of the Git repository that holds the project's wiki")]
     [string]$WikiUri,
 

@@ -1,10 +1,10 @@
 {
  "manifestVersion": 1,
- "id": "PremDev-VSTS-GenerateReleaseNotes-Task",
+ "id": "PremDev-VSTS-PublishToWiki-Task",
  "version": "1.0.0",
- "name": "Generate Release Notes Build Task",
+ "name": "Publish Release Notes to Project Wiki Task",
  "publisher": "DevManWalking",
-  "description": "Forked from the works of richardfennellBM; Generates a Markdown Release notes file.",
+  "description": "Custom task that publishes a release-notes markdown file to the wiki.",
  "categories": [
     "Build and release"
   ],
@@ -30,10 +30,10 @@
   },
    "links": {
     "getstarted": {
-      "uri": "https://github.com/rfennell/vNextBuild/wiki/GenerateReleaseNotes%20-Tasks"
+      "uri": ""
     },
     "support": {
-      "uri": "https://github.com/rfennell/vNextBuild/issues"
+      "uri": "https://support.microsoft.com/en-us/premier/contacts"
     }
   },
   "screenshots": [

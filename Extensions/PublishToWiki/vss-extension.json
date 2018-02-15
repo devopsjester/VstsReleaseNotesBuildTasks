@@ -1,34 +1,29 @@
 {
- "manifestVersion": 1,
- "id": "PremDev-VSTS-PublishToWiki-Task",
- "version": "1.0.0",
- "name": "Publish Release Notes to Project Wiki Task",
- "publisher": "DevManWalking",
+  "manifestVersion": 1,
+  "id": "PremDev-VSTS-PublishToWiki-Task",
+  "version": "0.1.1",
+  "name": "Publish Release Notes to Project Wiki Task",
+  "publisher": "DevManWalking",
   "description": "Custom task that publishes a release-notes markdown file to the wiki.",
- "categories": [
+  "categories": [
     "Build and release"
   ],
-  "galleryFlags": [
-        "Public"
-    ],
-  "targets": [
-         {
-             "id": "Microsoft.VisualStudio.Services"
-         }
-     ],
+  "targets": [{
+    "id": "Microsoft.VisualStudio.Services"
+  }],
   "tags": [
     "Release",
     "Package",
     "Publish"
-  ],   
+  ],
   "branding": {
-        "color": "#f97923",
-        "theme": "dark"
+    "color": "#f97923",
+    "theme": "dark"
   },
   "icons": {
-      "default": "images/logo.png"
+    "default": "images/logo.png"
   },
-   "links": {
+  "links": {
     "getstarted": {
       "uri": ""
     },
@@ -36,11 +31,10 @@
       "uri": "https://support.microsoft.com/en-us/premier/contacts"
     }
   },
-  "screenshots": [
-    {
+  "screenshots": [{
       "path": "images/screenshot.png"
     },
-      {
+    {
       "path": "images/screenshot1.png"
     }
   ],
@@ -52,21 +46,17 @@
       "path": "license.md"
     }
   },
-  "files": [
-    {
-      "path": "GenerateReleaseNotesTask"
+  "files": [{
+    "path": "PublishToWikiTask"
+  }],
+  "contributions": [{
+    "id": "Publish-To-Wiki",
+    "type": "ms.vss-distributed-task.task",
+    "targets": [
+      "ms.vss-distributed-task.tasks"
+    ],
+    "properties": {
+      "name": "PublishToWikiTask"
     }
-  ],
-  "contributions": [
-    {
-      "id": "Generate-Release-Notes",
-      "type": "ms.vss-distributed-task.task",
-      "targets": [
-        "ms.vss-distributed-task.tasks"
-      ],
-      "properties": {
-        "name": "GenerateReleaseNotesTask"
-      }
-    }
-  ]
+  }]
 }

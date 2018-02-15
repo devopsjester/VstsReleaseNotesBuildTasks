@@ -40,7 +40,7 @@ Describe "Template Processing Tests" {
         $templatefile="..\..\..\SampleTemplates\GenerateReleaseNotes (Original Powershell based)\build-basic-template.md"
         $inlinetemplate=""
         $stageName = ""
-        $buildid = 10
+        $buildid = 15
         $builddefname ="AllScriptsDemo-CI"
         $releasedefname = ""
         $collectionUrl = "https://customers-assafstone.visualstudio.com/DefaultCollection"
@@ -55,12 +55,12 @@ Describe "Template Processing Tests" {
         $maxWi=500
         $maxChanges=500
         $appendToFile=$False
-        $showParents=$true
+        $showParents=$false
         $wiFilter="Product Backlog Item, Bug"
         $wiStateFilter="Done, To Do, New"
 
     
-        $builds = Get-BuildDataSet -tfsUri $collectionUrl -teamproject $teamproject -buildid $buildid -usedefaultcreds $usedefaultcreds -maxWi $maxWi -maxChanges $maxChanges -wiFilter $wiFilter -wiStateFilter $wiStateFilter -showParents $showParents
+        $builds = Get-BuildDataSet -tfsUri $collectionUrl -teamproject $teamproject -buildid $buildid -usedefaultcreds $usedefaultcreds -maxWi $maxWi -maxChanges $maxChanges -wiFilter $wiFilter -wiStateFilter $wiStateFilter -showParents $showParents -Verbose
         $template = Get-Template -templateLocation $templateLocation -templatefile $templatefile -inlinetemplate $inlinetemplate
         $outputmarkdown = Invoke-Template -template $template -builds $builds -releases $releases -stagename $stageName -defname $builddefname -releasedefname $releasedefname
         $outputmarkdown | set-content $env:USERPROFILE\Temp\build-$buildid-release-notes.md

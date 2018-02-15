@@ -311,7 +311,7 @@ function Invoke-GetCommand {
         $webclient.Headers.Add("Authorization" , "Bearer $personalAccessToken")
     }
 		
-    #write-verbose "REST Call [$uri]"
+    Write-Verbose "REST Call [$uri]"
     $webclient.DownloadString($uri)
 }
 
@@ -603,7 +603,7 @@ function Get-CommitWorkItems {
         if ($showParents -eq $false) {
             Write-Verbose "        Running in directly associated WI only mode"
             foreach ($wi in $ids) {
-                $wiUrl = "$tfsUri/_apis/wit/workitems/$($wi)?api-version=1.0"
+                $wiUrl = "$tfsUri/_apis/wit/workitems/$($wi.Value)?api-version=1.0"
                 $wiList += Get-Detail -uri $wiUrl -usedefaultcreds $usedefaultcreds
             }	
         }

@@ -1,7 +1,7 @@
 {
  "manifestVersion": 1,
  "id": "PremDev-VSTS-GenerateReleaseNotes-Task",
- "version": "0.1.2",
+ "version": "0.1.3",
  "name": "Generate Release Notes Build Task",
  "publisher": "DevManWalking",
   "description": "Forked from the works of richardfennellBM; Generates a Markdown Release notes file.",

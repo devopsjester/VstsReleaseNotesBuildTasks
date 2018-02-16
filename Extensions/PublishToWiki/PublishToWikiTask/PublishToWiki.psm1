@@ -1,29 +1,28 @@
 function Get-WikiFromGit {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory=$true)][string]$Uri
+        [Parameter(Mandatory=$true)][string]$Uri,
+        [Parameter(Mandatory=$true)][string]$TargetFolder
     )
 
-    $PublishToWikiTaskGuid = "cfbe4a47-dabf-45af-a0e4-978f6e86ec75"
-    $WikiFolder = "$env:BUILD_BINARIESDIRECTORY\$PublishToWikiTaskGuid\Wiki"
-
+    $WikiFolder = "$TargetFolder\Wiki"
+    Write-Verbose "Setting up $WikiFolder as the local copy of the wiki repository."
     # Save current location, so that we can return to it later
     
     if (Test-Path $WikiFolder) {
+        Write-Verbose "$WikiFolder exists - removing it prior to initialization"
         Remove-Item -Path $WikiFolder -Recurse -Force
     }
 
     mkdir $WikiFolder
     Push-Location
     Set-Location $WikiFolder
-    
-    git init $WikiFolder
-    git remote add origin $Uri
-    git config gc.auto 0
-    git config --get-all http.$Uri.extraheader
-    git -c http.extraheader="AUTHORIZATION: bearer $env:SYSTEMACCESSTOKEN" fetch --tags --prune --progress --no recurse-submodules origin
-    git checkout --progress --force master
-    git config http.extraheader="AUTHORIZATION: bearer $env:SYSTEMACCESSTOKEN"
+    Write-Verbose "Set location at $WikiFolder."
+
+    git init; Write-Verbose "Initialized git repo"
+    git remote add origin $Uri ; Write-Verbose "add origin to $Uri"
+    git config gc.auto 0 ; Write-Verbose "Disabled garbage collection."
+    git pull ; Write-Verbose "Pulled wiki content to local repo."
 
     Pop-Location
     

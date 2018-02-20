@@ -2,10 +2,9 @@ function Get-WikiFromGit {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)][string]$Uri,
-        [Parameter(Mandatory=$true)][string]$TargetFolder
+        [Parameter(Mandatory=$true)][string]$WikiFolder
     )
 
-    $WikiFolder = "$TargetFolder\Wiki"
     Write-Verbose "Setting up $WikiFolder as the local copy of the wiki repository."
     # Save current location, so that we can return to it later
     
@@ -16,16 +15,25 @@ function Get-WikiFromGit {
 
     mkdir $WikiFolder
     Push-Location
+    $userName = $env:BUILD_REQUESTEDFOR
+    $pat = $env:SYSTEM_ACCESSTOKEN
+    git clone https://${BUILD_REQUESTEDFORID}:${SYSTEM_ACCESSTOKEN}@$Uri $WikiFolder
+    Write-Verbose "Cloned repo to $WikiFolder."
+
     Set-Location $WikiFolder
     Write-Verbose "Set location at $WikiFolder."
 
-    git init; Write-Verbose "Initialized git repo"
-    git remote add origin $Uri ; Write-Verbose "add origin to $Uri"
-    git config gc.auto 0 ; Write-Verbose "Disabled garbage collection."
-    git pull ; Write-Verbose "Pulled wiki content to local repo."
+    # git init; Write-Verbose "Initialized git repo"
+    # git remote add origin $Uri ; Write-Verbose "add origin to $Uri"
+    # git config gc.auto 0 ; Write-Verbose "Disabled garbage collection."
+    # git config user.name $env:BUILD_REQUESTEDFOR
+    # git config user.email $env:BUILD_REQUESTEDFOREMAIL
+    # git -c http.extraheader="AUTHORIZATION: bearer $env:SYSTEM_ACCESSTOKEN" pull origin wikiMaster #fetch --tags --prune --progress --no-recurse-submodules origin
+    Write-Verbose "Pulled wiki content to local repo."
+    git branch --set-upstream-to=origin/wikiMaster master; Write-Verbose "Set upstream to master"
 
     Pop-Location
-    
+    Write-Verbose "This is what is going to be in WikiFolder = [$WikiFolder]."
     Write-Output $WikiFolder
 }
 

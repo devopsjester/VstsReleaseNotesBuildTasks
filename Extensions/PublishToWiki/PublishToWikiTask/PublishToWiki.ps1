@@ -14,16 +14,18 @@ Import-Module -Name "$PSScriptRoot\PublishToWiki.psm1" -Force
 $collectionUrl = $env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI
 $teamproject = $env:SYSTEM_TEAMPROJECT
 $binariesDirectory = $env:BUILD_BINARIESDIRECTORY
-
+$token = $env:SYSTEM_ACCESSTOKEN
 Write-Verbose "collectionUrl = [$collectionUrl]"
 Write-Verbose "teamproject = [$teamproject]"
+Write-Verbose "token = [$token]"
 Write-Verbose "binariesDirectory = [$binariesDirectory]"
 Write-Verbose "PathToFile = [$PathToFile]"
 Write-Verbose "WikiUrl = [$WikiUrl]"
 Write-Verbose "File = [$File]"
 
-$localWikiPath = Get-WikiFromGit -Uri $WikiUrl -TargetFolder $binariesDirectory
-Write-Verbose "Cloning Wiki repository to $localWikiPath."
+$localWikiPath = "$binariesDirectory\Wiki"
+Get-WikiFromGit -Uri $WikiUrl -WikiFolder $localWikiPath
+Write-Verbose "localWikiPath = [$localWikiPath]"
 
 $targetPath = "$localWikiPath\$PathToFile"
 mkdir $targetPath -ErrorAction SilentlyContinue
@@ -47,7 +49,7 @@ Write-Verbose "Added release note link ($releaseNote) to $releaseTOCFileName."
 Set-Location $localWikiPath
 git add .
 git commit -m "PublishToWiki task: Updated release notes in wiki"
-git push
+git push  
 Pop-Location
 Write-Verbose "Updated wiki in VSTS."
 

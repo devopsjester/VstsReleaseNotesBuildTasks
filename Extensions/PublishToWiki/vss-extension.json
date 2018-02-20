@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "PremDev-VSTS-PublishToWiki-Task",
-  "version": "0.1.17",
+  "version": "0.1.30",
   "name": "Publish Release Notes to Project Wiki Task",
   "publisher": "DevManWalking",
   "description": "Custom task that publishes a release-notes markdown file to the wiki.",

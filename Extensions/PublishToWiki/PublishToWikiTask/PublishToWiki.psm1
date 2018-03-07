@@ -17,18 +17,18 @@ function Get-WikiFromGit {
     Push-Location
     $userName = $env:BUILD_REQUESTEDFOR
     $pat = $env:SYSTEM_ACCESSTOKEN
-    git clone https://${BUILD_REQUESTEDFORID}:${SYSTEM_ACCESSTOKEN}@$Uri $WikiFolder
-    Write-Verbose "Cloned repo to $WikiFolder."
+    #git clone $Uri $WikiFolder
+    #Write-Verbose "Cloned repo to $WikiFolder."
 
     Set-Location $WikiFolder
     Write-Verbose "Set location at $WikiFolder."
 
-    # git init; Write-Verbose "Initialized git repo"
-    # git remote add origin $Uri ; Write-Verbose "add origin to $Uri"
-    # git config gc.auto 0 ; Write-Verbose "Disabled garbage collection."
-    # git config user.name $env:BUILD_REQUESTEDFOR
-    # git config user.email $env:BUILD_REQUESTEDFOREMAIL
-    # git -c http.extraheader="AUTHORIZATION: bearer $env:SYSTEM_ACCESSTOKEN" pull origin wikiMaster #fetch --tags --prune --progress --no-recurse-submodules origin
+    git init; Write-Verbose "Initialized git repo"
+    git remote add origin $Uri ; Write-Verbose "add origin to $Uri"
+    git config gc.auto 0 ; Write-Verbose "Disabled garbage collection."
+    git config user.name $env:BUILD_REQUESTEDFOR; Write-Verbose "Build requested for $env:BUILD_REQUESTEDFOR"
+    git config user.email $env:BUILD_REQUESTEDFOREMAIL; Write-Verbose "email address: $env:BUILD_REQUESTEDFOREMAIL"
+    git -c http.extraheader="AUTHORIZATION: bearer $env:SYSTEM_ACCESSTOKEN" pull origin wikiMaster #fetch --tags --prune --progress --no-recurse-submodules origin
     Write-Verbose "Pulled wiki content to local repo."
     git branch --set-upstream-to=origin/wikiMaster master; Write-Verbose "Set upstream to master"
 

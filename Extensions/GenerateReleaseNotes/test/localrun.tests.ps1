@@ -40,7 +40,7 @@ Describe "Template Processing Tests" {
         $templatefile="..\..\..\SampleTemplates\GenerateReleaseNotes (Original Powershell based)\build-basic-template.md"
         $inlinetemplate=""
         $stageName = ""
-        $buildid = 15
+        $buildid = 123
         $builddefname ="AllScriptsDemo-CI"
         $releasedefname = ""
         $collectionUrl = "https://customers-assafstone.visualstudio.com/DefaultCollection"

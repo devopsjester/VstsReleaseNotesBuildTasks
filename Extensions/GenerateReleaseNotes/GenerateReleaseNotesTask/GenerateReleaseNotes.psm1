@@ -572,7 +572,7 @@ function Get-BuildDataSet {
         }
         
     }
-    
+    $workItems = $workItems | sort id | select -Unique
     $build = @{ 'build' = $build;
         'workitems' = $workItems;
         'changesets' = $changes

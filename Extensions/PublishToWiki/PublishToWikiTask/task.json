@@ -9,7 +9,7 @@
     "version": {
         "Major": 0,
         "Minor": 1,
-        "Patch": 30
+        "Patch": 33
     },
     "instanceNameFormat": "Publish $(File) to project wiki",
     "groups": [

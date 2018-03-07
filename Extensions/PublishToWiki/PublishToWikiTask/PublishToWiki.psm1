@@ -28,8 +28,9 @@ function Get-WikiFromGit {
     git config gc.auto 0 ; Write-Verbose "Disabled garbage collection."
     git config user.name $env:BUILD_REQUESTEDFOR; Write-Verbose "Build requested for $env:BUILD_REQUESTEDFOR"
     git config user.email $env:BUILD_REQUESTEDFOREMAIL; Write-Verbose "email address: $env:BUILD_REQUESTEDFOREMAIL"
-    git -c http.extraheader="AUTHORIZATION: bearer $env:SYSTEM_ACCESSTOKEN" pull origin wikiMaster #fetch --tags --prune --progress --no-recurse-submodules origin
-    Write-Verbose "Pulled wiki content to local repo."
+    git config http.extraheader "AUTHORIZATION: bearer $env:SYSTEM_ACCESSTOKEN"; Write-Verbose "Set authorization to PAT"
+    git pull origin wikiMaster -q; Write-Verbose "Pulled wiki content to local repo."
+    
     git branch --set-upstream-to=origin/wikiMaster master; Write-Verbose "Set upstream to master"
 
     Pop-Location

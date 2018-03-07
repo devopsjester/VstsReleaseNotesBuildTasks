@@ -49,7 +49,7 @@ Write-Verbose "Added release note link ($releaseNote) to $releaseTOCFileName."
 Set-Location $localWikiPath
 git add .
 git commit -m "PublishToWiki task: Updated release notes in wiki"
-git push 
+git push origin HEAD:wikiMaster -f -q
 Pop-Location
 Write-Verbose "Updated wiki in VSTS."
 
